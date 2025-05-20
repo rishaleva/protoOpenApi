@@ -30,7 +30,16 @@
         <os.maven.plugin.version>1.7.1</os.maven.plugin.version>
         <protobuf-plugin.version>0.6.1</protobuf-plugin.version>
         <lombok.version>1.18.24</lombok.version>
+            <gopath>${env.GOPATH}</gopath>
+
     </properties>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -199,6 +208,34 @@
                         </goals>
                         <configuration>
                             <pluginParameter>jakarta_omit,@generated=omit</pluginParameter>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-openapi</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>/opt/homebrew/bin/protoc</executable>
+                            <arguments>
+                                <argument>--plugin=protoc-gen-openapi=/Users/rishaleva/go/bin/protoc-gen-openapi</argument>
+                                <argument>--openapi_out=src/main/proto/openapi</argument>
+                                <argument>-I</argument>
+                                <argument>src/main/proto</argument>
+                                <argument>-I</argument>
+                                <argument>src/main/proto/googleapis</argument>
+                                <argument>-I</argument>
+                                <argument>src/main/proto/protoc-gen-openapiv2</argument>
+                                <argument>src/main/proto/agreement.proto</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

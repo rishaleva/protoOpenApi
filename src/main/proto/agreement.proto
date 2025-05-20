@@ -1,17 +1,20 @@
 syntax = "proto3";
 
 package agreement;
+
 option go_package = "github.com/rishaleva/agreement/proto;proto";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "googleapis/google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 option java_multiple_files = true;
 
-service AgreementService{
-  // Метод создания соглашения
-  rpc createAgreement(AgreementRequest) returns(google.protobuf.Empty){
+// Сервис для работы с соглашениями
+service AgreementService {
+  // Метод создания нового соглашения
+  rpc createAgreement(AgreementRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/agreement"
       body: "*"
@@ -21,17 +24,76 @@ service AgreementService{
 
 // Запрос на создание соглашения
 message AgreementRequest {
-  string login = 1;             // Логин пользователя, который создаёт соглашение
-  string module = 2;            // Имя модуля системы, откуда вызывается запрос
-  string typeDocCode = 3;       // Код типа документа соглашения
-  string objectUid = 4;         // Уникальный идентификатор объекта
-  Data data = 5;                // Данные соглашения
+  // Логин пользователя, инициирующего создание соглашения
+  string login = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Логин пользователя, который создает соглашение"
+    }
+  ];
+
+  // Имя модуля системы, откуда исходит запрос (например, "billing", "user-management")
+  string module = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Имя модуля системы, из которого был сделан запрос"
+    }
+  ];
+
+  // Код типа документа соглашения (например, "NDA", "CONTRACT")
+  string typeDocCode = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Код типа документа соглашения"
+    }
+  ];
+
+  // Уникальный идентификатор связанного объекта (например, договора, пользователя)
+  optional string objectUid = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Уникальный идентификатор объекта, к которому относится соглашение"
+    }
+  ];
+
+  // Основные данные соглашения
+  Data data = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Основные данные соглашения"
+    }
+  ];
 }
 
+// Основные данные соглашения
 message Data {
-  string requestId = 1;
-  google.protobuf.Timestamp requestDate = 2;
-  string requesterName = 3;
-  string status = 4;
-  string comments = 5;
+  // Уникальный идентификатор запроса на создание соглашения
+  string requestId = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Уникальный идентификатор запроса"
+    }
+  ];
+
+  // Дата и время создания запроса
+  google.protobuf.Timestamp requestDate = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Дата и время создания запроса"
+    }
+  ];
+
+  // Имя лица, запрашивающего создание соглашения
+  string requesterName = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Имя лица, запрашивающего соглашение"
+    }
+  ];
+
+  // Текущий статус соглашения (например, "NEW", "APPROVED", "REJECTED")
+  string status = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Текущий статус соглашения"
+    }
+  ];
+
+  // Комментарии к соглашению
+  optional string comments = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Комментарии или дополнительные заметки"
+    }
+  ];
 }
