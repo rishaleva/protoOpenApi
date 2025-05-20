@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package agreement;
+option go_package = "github.com/rishaleva/agreement/proto;proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "googleapis/google/api/annotations.proto";
+
+option java_multiple_files = true;
+
+service AgreementService{
+  // Метод создания соглашения
+  rpc createAgreement(AgreementRequest) returns(google.protobuf.Empty){
+    option (google.api.http) = {
+      post: "/api/v1/agreement"
+      body: "*"
+    };
+  }
+}
+
+// Запрос на создание соглашения
+message AgreementRequest {
+  string login = 1;             // Логин пользователя, который создаёт соглашение
+  string module = 2;            // Имя модуля системы, откуда вызывается запрос
+  string typeDocCode = 3;       // Код типа документа соглашения
+  string objectUid = 4;         // Уникальный идентификатор объекта
+  Data data = 5;                // Данные соглашения
+}
+
+message Data {
+  string requestId = 1;
+  google.protobuf.Timestamp requestDate = 2;
+  string requesterName = 3;
+  string status = 4;
+  string comments = 5;
+}

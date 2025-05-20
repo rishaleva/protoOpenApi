@@ -1,0 +1,20 @@
+grpc:
+  is-local-run: ${IS_GRPC_LOCAL_RUN:true}
+  authorization:
+    enabled: false
+
+  server:
+    reflection-service-enabled: true
+    port: 9090
+    security:
+      enabled: ${GRPC_SERVER_SECURITY_ENABLED:false}
+  client:
+    GLOBAL:
+      address: ${server_address_grpc:localhost}
+      negotiationType: TLS
+
+springdoc:
+  swagger-ui:
+    urls:
+      - url: /openapi/openapi.yaml
+        name: GRPC
